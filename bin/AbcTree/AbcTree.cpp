@@ -36,9 +36,7 @@
 
 #include <Alembic/Abc/All.h>
 #include <Alembic/AbcCoreAbstract/All.h>
-#ifdef ALEMBIC_WITH_HDF5
 #include <Alembic/AbcCoreHDF5/All.h>
-#endif
 #include <Alembic/AbcCoreOgawa/All.h>
 #include <Alembic/AbcCoreFactory/All.h>
 #include <Alembic/AbcCollection/All.h>
@@ -305,18 +303,18 @@ int main( int argc, char *argv[] )
     // set some flags
     opt_all = optionExists( options, "a");
     opt_meta = optionExists( options, "m");
-
+#if 0
     // open each file
     size_t count = 0;
     for ( std::size_t i = 0; i < files.size(); i++ ) {
         if ( files.size() > 1 )
             std::cout << BOLD << files[i] << ':' << RESETCOLOR << std::endl;
-
         std::stringstream ss( files[i] );
         std::stringstream fp;
         std::string segment;
+#endif
         std::vector<std::string> seglist;
-
+#if 0
         /* 
          * separate file and object paths, e.g.
          *
@@ -335,14 +333,17 @@ int main( int argc, char *argv[] )
             }
             ++j;
         }
-
+#endif
         // open the iarchive
         Abc::IArchive archive;
         AbcF::IFactory factory;
         factory.setPolicy(Abc::ErrorHandler::kQuietNoopPolicy);
         AbcF::IFactory::CoreType coreType;
-        archive = factory.getArchive(std::string( fp.str() ), coreType);
-
+#if 0
+	archive = factory.getArchive(std::string( fp.str() ), coreType);
+#else
+	archive = factory.getArchive(files, coreType);
+#endif
         // display file metadata 
         if ( opt_meta ) {
             std::cout  << "Using "
@@ -423,9 +424,9 @@ int main( int argc, char *argv[] )
                 tree( Abc::IScalarProperty( props, header->getName() ) );
         else
             tree( iObj, opt_all );
-
+#if 0
         ++count;
     }
-
+#endif
     return 0;
 }
